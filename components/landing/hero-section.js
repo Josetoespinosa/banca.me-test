@@ -7,8 +7,6 @@ import { LeadFormDialog } from "@/components/landing/lead-form-dialog";
 import styles from "@/components/landing/landing.module.css";
 import { heroHighlights } from "@/lib/site-content";
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
-
 export function HeroSection() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -35,7 +33,7 @@ export function HeroSection() {
               </button>
               <a
                 className={styles.secondaryButton}
-                href="/"
+                href="https://creditos.banca.me/loan-payment"
                 rel="noreferrer"
                 target="_blank"
               >
@@ -69,11 +67,7 @@ export function HeroSection() {
           </div>
         </div>
       </div>
-      <LeadFormDialog
-        apiBaseUrl={apiBaseUrl}
-        onClose={() => setIsDialogOpen(false)}
-        open={isDialogOpen}
-      />
+      <LeadFormDialog onClose={() => setIsDialogOpen(false)} open={isDialogOpen} />
     </section>
   );
 }
