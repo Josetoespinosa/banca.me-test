@@ -1,0 +1,15 @@
+{
+  "name": "banca-me-landing",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "backend:dev": "uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000"
+  },
+  "dependencies": {
+    "next": "16.1.7",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  }
+}
