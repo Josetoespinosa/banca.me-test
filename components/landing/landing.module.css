@@ -109,6 +109,43 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  align-items: center;
+}
+
+.modeSwitch {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid rgba(24, 19, 31, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.modeSwitchOption {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 88px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 700;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.modeSwitchOption:hover {
+  color: var(--ink);
+}
+
+.modeSwitchOptionActive {
+  color: var(--surface);
+  background: linear-gradient(135deg, var(--brand), #1f163d);
+  box-shadow: 0 12px 24px rgba(46, 31, 99, 0.18);
 }
 
 .ghostAction,

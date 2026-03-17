@@ -1,4 +1,5 @@
 import { BrandLogo } from "@/components/landing/brand-logo";
+import { ModeSwitch } from "@/components/landing/mode-switch";
 import styles from "@/components/landing/landing.module.css";
 import { mainNav } from "@/lib/site-content";
 
@@ -7,7 +8,7 @@ export function Header() {
     <header className={styles.headerWrap}>
       <div className={styles.shell}>
         <div className={styles.header}>
-          <BrandLogo href="#top" />
+          <BrandLogo href="/" />
           <nav className={styles.nav} aria-label="Principal">
             {mainNav.map((item) => (
               <a className={styles.navLink} key={item.label} href={item.href}>
@@ -16,16 +17,15 @@ export function Header() {
             ))}
           </nav>
           <div className={styles.headerActions}>
-            <a className={styles.ghostAction} href="#contacto">
+            <ModeSwitch />
+            <a className={styles.ghostAction} href="/solicitud/finanzas">
               Ingresar
             </a>
             <a
               className={styles.solidAction}
-              href="/"
-              rel="noreferrer"
-              target="_blank"
+              href="/solicitud/finanzas"
             >
-              Pagar Crédito
+              Solicitar Crédito
             </a>
           </div>
         </div>

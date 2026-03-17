@@ -21,6 +21,7 @@ class Settings:
     cors_origins: list[str]
     contact_recipient: str
     contact_provider: str
+    sqlite_path: str
 
 
 settings = Settings(
@@ -33,4 +34,7 @@ settings = Settings(
     ),
     contact_recipient=os.getenv("BACKEND_CONTACT_RECIPIENT", "contacto@banca.me"),
     contact_provider=os.getenv("BACKEND_CONTACT_PROVIDER", "placeholder"),
+    sqlite_path=os.getenv(
+        "BACKEND_SQLITE_PATH", str(ROOT_DIR / "backend" / "data" / "applications.sqlite3")
+    ),
 )

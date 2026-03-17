@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from backend.app.database import init_database
 from backend.app.config import settings
 from backend.app.routes import router
 
@@ -19,6 +20,11 @@ app.add_middleware(
 )
 
 app.include_router(router)
+
+
+@app.on_event("startup")
+def on_startup():
+    init_database()
 
 
 @app.get("/")

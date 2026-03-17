@@ -174,6 +174,12 @@
   box-shadow: 0 16px 40px rgba(46, 31, 99, 0.24);
 }
 
+.primaryAction:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+}
+
 .secondaryAction {
   color: var(--ink);
   border: 1px solid rgba(24, 19, 31, 0.08);
@@ -197,6 +203,71 @@
   background: rgba(220, 252, 231, 0.9);
 }
 
+.statusError {
+  color: #9f1239;
+  background: rgba(255, 241, 242, 0.92);
+}
+
+.resultCard {
+  margin-top: 22px;
+  padding: 22px;
+  border-radius: 26px;
+  border: 1px solid rgba(24, 19, 31, 0.08);
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.resultTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.resultTitle {
+  margin: 8px 0 0;
+  font-family: var(--font-display), sans-serif;
+  font-size: 2rem;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-transform: capitalize;
+}
+
+.scoreBadge {
+  padding: 14px 18px;
+  border-radius: 20px;
+  background: rgba(245, 241, 255, 0.92);
+  text-align: right;
+}
+
+.scoreBadge strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 1.5rem;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.metricsGrid strong {
+  display: block;
+  margin-top: 6px;
+}
+
+.reasonBlock {
+  margin-top: 20px;
+}
+
+.reasonList {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding-left: 18px;
+}
+
 .emptyState {
   text-align: left;
 }
@@ -204,7 +275,8 @@
 @media (max-width: 920px) {
   .pageGrid,
   .summaryGrid,
-  .formGrid {
+  .formGrid,
+  .metricsGrid {
     grid-template-columns: 1fr;
   }
 }

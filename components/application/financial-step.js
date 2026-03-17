@@ -11,6 +11,8 @@ import {
 } from "@/lib/application-flow";
 import styles from "@/components/application/application-flow.module.css";
 
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+
 function formatCurrency(value) {
   return new Intl.NumberFormat("es-CL", {
     style: "currency",
@@ -25,6 +27,8 @@ export function FinancialStep() {
   const [form, setForm] = useState(financeInitialValues);
   const [errors, setErrors] = useState({});
   const [feedback, setFeedback] = useState(null);
+  const [evaluation, setEvaluation] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const applicantDraft = getApplicantDraft();
@@ -36,6 +40,7 @@ export function FinancialStep() {
         ingresos: String(financeDraft.ingresos ?? ""),
         gastos: String(financeDraft.gastos ?? ""),
         deudas: String(financeDraft.deudas ?? ""),
+        montoSolicitado: String(financeDraft.montoSolicitado ?? ""),
       });
     }
     setIsReady(true);
@@ -59,9 +64,10 @@ export function FinancialStep() {
       [name]: "",
     }));
     setFeedback(null);
+    setEvaluation(null);
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     const { data, errors: fieldErrors } = validateFinancialStep(form);
@@ -72,13 +78,63 @@ export function FinancialStep() {
       return;
     }
 
-    saveFinanceDraft(data);
+    if (!applicant.applicationId) {
+      setFeedback({
+        type: "error",
+        message: "No encontramos el identificador de la solicitud.",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
     setErrors({});
-    setFeedback({
-      type: "success",
-      message:
-        "Tus datos financieros quedaron guardados para el siguiente paso del MVP.",
-    });
+    setFeedback(null);
+    setEvaluation(null);
+
+    try {
+      const payload = {
+        ingresosMensuales: data.ingresos,
+        gastosMensuales: data.gastos,
+        deudasMensuales: data.deudas,
+        montoSolicitado: data.montoSolicitado,
+      };
+
+      const response = await fetch(
+        `${apiBaseUrl}/api/applications/${applicant.applicationId}/evaluate`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const responsePayload = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        setFeedback({
+          type: "error",
+          message: responsePayload.detail || "No pudimos evaluar la solicitud.",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      saveFinanceDraft(data);
+      setEvaluation(responsePayload);
+      setFeedback({
+        type: "success",
+        message: "La solicitud fue enviada y evaluada correctamente.",
+      });
+    } catch {
+      setFeedback({
+        type: "error",
+        message: "No pudimos conectar con el backend para evaluar la solicitud.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   if (!isReady) {
@@ -156,6 +212,24 @@ export function FinancialStep() {
             <form onSubmit={handleSubmit}>
               <div className={styles.formGrid}>
                 <label className={styles.field}>
+                  <span className={styles.fieldLabel}>Monto a solicitar</span>
+                  <input
+                    className={`${styles.fieldInput} ${
+                      errors.montoSolicitado ? styles.fieldInputError : ""
+                    }`}
+                    min="0"
+                    name="montoSolicitado"
+                    onChange={handleChange}
+                    placeholder="2500000"
+                    type="number"
+                    value={form.montoSolicitado}
+                  />
+                  {errors.montoSolicitado ? (
+                    <span className={styles.fieldError}>{errors.montoSolicitado}</span>
+                  ) : null}
+                </label>
+
+                <label className={styles.field}>
                   <span className={styles.fieldLabel}>Ingresos</span>
                   <input
                     className={`${styles.fieldInput} ${
@@ -216,8 +290,8 @@ export function FinancialStep() {
               </div>
 
               <div className={styles.formActions}>
-                <button className={styles.primaryAction} type="submit">
-                  Guardar datos
+                <button className={styles.primaryAction} disabled={isSubmitting} type="submit">
+                  {isSubmitting ? "Evaluando..." : "Evaluar solicitud"}
                 </button>
                 <a className={styles.secondaryAction} href="/">
                   Volver a la landing
@@ -225,9 +299,60 @@ export function FinancialStep() {
               </div>
 
               {feedback ? (
-                <p className={`${styles.statusMessage} ${styles.statusSuccess}`}>
+                <p
+                  className={`${styles.statusMessage} ${
+                    feedback.type === "error" ? styles.statusError : styles.statusSuccess
+                  }`}
+                >
                   {feedback.message}
                 </p>
+              ) : null}
+
+              {evaluation ? (
+                <div className={styles.resultCard}>
+                  <div className={styles.resultTop}>
+                    <div>
+                      <span className={styles.summaryLabel}>Resultado del modelo</span>
+                      <h3 className={styles.resultTitle}>{evaluation.status}</h3>
+                    </div>
+                    <div className={styles.scoreBadge}>
+                      <span className={styles.summaryLabel}>Score</span>
+                      <strong>{evaluation.score}</strong>
+                    </div>
+                  </div>
+
+                  <div className={styles.metricsGrid}>
+                    <div>
+                      <span className={styles.summaryLabel}>DTI</span>
+                      <strong>{evaluation.metrics.DTI}</strong>
+                    </div>
+                    <div>
+                      <span className={styles.summaryLabel}>Margen</span>
+                      <strong>{formatCurrency(evaluation.metrics.margenDisponible)}</strong>
+                    </div>
+                    <div>
+                      <span className={styles.summaryLabel}>Ratio gastos</span>
+                      <strong>{evaluation.metrics.ratioGastos}</strong>
+                    </div>
+                    <div>
+                      <span className={styles.summaryLabel}>Capacidad de pago</span>
+                      <strong>{evaluation.metrics.capacidadPago}</strong>
+                    </div>
+                    <div>
+                      <span className={styles.summaryLabel}>Cuota estimada</span>
+                      <strong>{formatCurrency(evaluation.metrics.cuotaMensual)}</strong>
+                    </div>
+                  </div>
+
+                  <div className={styles.reasonBlock}>
+                    <span className={styles.summaryLabel}>Razones</span>
+                    <ul className={styles.reasonList}>
+                      {evaluation.razones.map((reason) => (
+                        <li key={reason}>{reason}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
               ) : null}
             </form>
           </div>

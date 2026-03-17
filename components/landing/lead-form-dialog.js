@@ -6,11 +6,12 @@ import { useRouter } from "next/navigation";
 import {
   applicantInitialValues,
   clearFinanceDraft,
-  isRutApproved,
   saveApplicantDraft,
   validateApplicantStep,
 } from "@/lib/application-flow";
 import styles from "@/components/landing/landing.module.css";
+
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
 export function LeadFormDialog({ open, onClose }) {
   const router = useRouter();
@@ -90,7 +91,7 @@ export function LeadFormDialog({ open, onClose }) {
     setFeedback(null);
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     const { errors: fieldErrors, data } = validateApplicantStep(form);
 
@@ -104,24 +105,62 @@ export function LeadFormDialog({ open, onClose }) {
     setErrors({});
     setFeedback(null);
 
-    if (!isRutApproved(data.rut)) {
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/applications/start`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const payload = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        setFeedback({
+          type: "warning",
+          mode: "default",
+          message: payload.detail || "No pudimos iniciar la solicitud.",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (payload.identityStatus === "rejected") {
+        saveApplicantDraft({
+          ...data,
+          applicationId: payload.applicationId,
+          identityStatus: payload.identityStatus,
+        });
+        setFeedback({
+          type: "warning",
+          mode: "reset",
+          message: payload.message || "No se pudo reconocer la identidad. Volvemos al inicio.",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      clearFinanceDraft();
+      saveApplicantDraft({
+        ...data,
+        applicationId: payload.applicationId,
+        identityStatus: payload.identityStatus,
+      });
+      setForm(applicantInitialValues);
+      setErrors({});
+      setFeedback(null);
+      setIsSubmitting(false);
+      onClose();
+      router.push("/solicitud/finanzas");
+    } catch {
       setFeedback({
         type: "warning",
-        mode: "reset",
-        message: "No se pudo reconocer la identidad. Volvemos al inicio.",
+        mode: "default",
+        message: "No pudimos conectar con el backend.",
       });
       setIsSubmitting(false);
-      return;
     }
-
-    clearFinanceDraft();
-    saveApplicantDraft(data);
-    setForm(applicantInitialValues);
-    setErrors({});
-    setFeedback(null);
-    setIsSubmitting(false);
-    onClose();
-    router.push("/solicitud/finanzas");
   }
 
   function getFieldClass(hasError) {

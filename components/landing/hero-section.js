@@ -33,11 +33,9 @@ export function HeroSection() {
               </button>
               <a
                 className={styles.secondaryButton}
-                href="https://creditos.banca.me/loan-payment"
-                rel="noreferrer"
-                target="_blank"
+                href="/solicitud/finanzas"
               >
-                Pagar Crédito
+                Continuar Solicitud
               </a>
             </div>
             <div className={styles.heroMeta}>

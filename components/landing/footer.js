@@ -10,7 +10,7 @@ export function Footer() {
       <div className={styles.shell}>
         <div className={styles.footerGrid}>
           <div className={styles.footerBrand}>
-            <BrandLogo href="#top" light />
+            <BrandLogo href="/" light />
             <div className={styles.footerAddress}>
               <p>Bancame SpA</p>
               <p>Eliodoro Yáñez 2990, Torre A, piso 3.</p>
