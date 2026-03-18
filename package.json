@@ -5,7 +5,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "backend:dev": "uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000"
+    "backend:dev": "uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000",
+    "test:load": "node scripts/load-test-applications.mjs"
   },
   "dependencies": {
     "next": "16.1.7",

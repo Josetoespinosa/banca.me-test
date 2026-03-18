@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import { getApiBaseUrl } from "@/lib/api-base-url";
+import { downloadContractPdf } from "@/lib/contract-pdf";
 import {
   financeInitialValues,
   getApplicantDraft,
@@ -10,8 +12,6 @@ import {
   validateFinancialStep,
 } from "@/lib/application-flow";
 import styles from "@/components/application/application-flow.module.css";
-
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
 function formatCurrency(value) {
   return new Intl.NumberFormat("es-CL", {
@@ -29,6 +29,7 @@ export function FinancialStep() {
   const [feedback, setFeedback] = useState(null);
   const [evaluation, setEvaluation] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDownloadingContract, setIsDownloadingContract] = useState(false);
 
   useEffect(() => {
     const applicantDraft = getApplicantDraft();
@@ -92,6 +93,7 @@ export function FinancialStep() {
     setEvaluation(null);
 
     try {
+      const apiBaseUrl = getApiBaseUrl();
       const payload = {
         ingresosMensuales: data.ingresos,
         gastosMensuales: data.gastos,
@@ -134,6 +136,37 @@ export function FinancialStep() {
       });
     } finally {
       setIsSubmitting(false);
+    }
+  }
+
+  async function handleDownloadContract() {
+    if (!evaluation || evaluation.status !== "apto" || !applicant) {
+      return;
+    }
+
+    setIsDownloadingContract(true);
+
+    try {
+      downloadContractPdf({
+        applicationId: applicant.applicationId,
+        fechaEmision: new Intl.DateTimeFormat("es-CL", {
+          dateStyle: "full",
+          timeStyle: "short",
+        }).format(new Date()),
+        nombreCompleto: `${applicant.nombre} ${applicant.apellido}`,
+        rut: applicant.rut,
+        email: applicant.email,
+        tipoCliente: applicant.tipoCliente === "empresa" ? "Empresa" : "Persona",
+        empresaNombre: applicant.empresaNombre,
+        empresaRut: applicant.empresaRut,
+        montoSolicitado: formatCurrency(Number(form.montoSolicitado || 0)),
+        cuotaMensual: formatCurrency(evaluation.metrics.cuotaMensual),
+        status: evaluation.status,
+        score: evaluation.score,
+        razones: evaluation.razones,
+      });
+    } finally {
+      setIsDownloadingContract(false);
     }
   }
 
@@ -352,6 +385,21 @@ export function FinancialStep() {
                       ))}
                     </ul>
                   </div>
+
+                  {evaluation.status === "apto" ? (
+                    <div className={styles.formActions}>
+                      <button
+                        className={styles.secondaryAction}
+                        disabled={isDownloadingContract}
+                        onClick={handleDownloadContract}
+                        type="button"
+                      >
+                        {isDownloadingContract
+                          ? "Generando contrato..."
+                          : "Descargar contrato PDF"}
+                      </button>
+                    </div>
+                  ) : null}
                 </div>
               ) : null}
             </form>

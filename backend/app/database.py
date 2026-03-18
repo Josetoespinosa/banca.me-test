@@ -9,6 +9,16 @@ from uuid import uuid4
 from backend.app.config import settings
 
 
+def ensure_column(connection: sqlite3.Connection, column_name: str, definition: str) -> None:
+    columns = connection.execute("PRAGMA table_info(credit_applications)").fetchall()
+    existing_columns = {column[1] for column in columns}
+
+    if column_name not in existing_columns:
+        connection.execute(
+            f"ALTER TABLE credit_applications ADD COLUMN {column_name} {definition}"
+        )
+
+
 def init_database() -> None:
     database_path = Path(settings.sqlite_path)
     database_path.parent.mkdir(parents=True, exist_ok=True)
@@ -37,10 +47,14 @@ def init_database() -> None:
                 evaluation_status TEXT,
                 evaluation_score INTEGER,
                 evaluation_metrics_json TEXT,
-                evaluation_reasons_json TEXT
+                evaluation_reasons_json TEXT,
+                manual_decision TEXT,
+                manual_reviewed_at TEXT
             )
             """
         )
+        ensure_column(connection, "manual_decision", "TEXT")
+        ensure_column(connection, "manual_reviewed_at", "TEXT")
         connection.commit()
 
 
@@ -126,7 +140,9 @@ def save_financial_evaluation(
                 evaluation_status = ?,
                 evaluation_score = ?,
                 evaluation_metrics_json = ?,
-                evaluation_reasons_json = ?
+                evaluation_reasons_json = ?,
+                manual_decision = NULL,
+                manual_reviewed_at = NULL
             WHERE application_id = ?
             """,
             (
@@ -140,6 +156,34 @@ def save_financial_evaluation(
                 json.dumps(evaluation["razones"]),
                 application_id,
             ),
+        )
+        connection.commit()
+
+    return get_application(application_id)
+
+
+def list_applications() -> list[dict]:
+    with get_connection() as connection:
+        rows = connection.execute(
+            "SELECT * FROM credit_applications ORDER BY datetime(created_at) DESC, id DESC"
+        ).fetchall()
+
+    return [dict(row) for row in rows]
+
+
+def save_manual_review(application_id: str, decision: str) -> dict | None:
+    with get_connection() as connection:
+        connection.execute(
+            """
+            UPDATE credit_applications
+            SET
+                updated_at = datetime('now'),
+                evaluation_status = ?,
+                manual_decision = ?,
+                manual_reviewed_at = datetime('now')
+            WHERE application_id = ?
+            """,
+            (decision, decision, application_id),
         )
         connection.commit()
 

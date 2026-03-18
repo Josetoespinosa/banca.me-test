@@ -30,7 +30,10 @@ settings = Settings(
     host=os.getenv("BACKEND_HOST", "0.0.0.0"),
     port=int(os.getenv("BACKEND_PORT", "8000")),
     cors_origins=_split_csv(
-        os.getenv("BACKEND_CORS_ORIGINS", "http://localhost:3000")
+        os.getenv(
+            "BACKEND_CORS_ORIGINS",
+            "http://localhost:3000,http://127.0.0.1:3000",
+        )
     ),
     contact_recipient=os.getenv("BACKEND_CONTACT_RECIPIENT", "contacto@banca.me"),
     contact_provider=os.getenv("BACKEND_CONTACT_PROVIDER", "placeholder"),

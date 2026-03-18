@@ -3,15 +3,15 @@
 import { useEffect, useEffectEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { getApiBaseUrl } from "@/lib/api-base-url";
 import {
   applicantInitialValues,
   clearFinanceDraft,
+  formatRutInput,
   saveApplicantDraft,
   validateApplicantStep,
 } from "@/lib/application-flow";
 import styles from "@/components/landing/landing.module.css";
-
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
 export function LeadFormDialog({ open, onClose }) {
   const router = useRouter();
@@ -74,9 +74,12 @@ export function LeadFormDialog({ open, onClose }) {
 
   function handleChange(event) {
     const { name, value } = event.target;
+    const nextValue =
+      name === "rut" || name === "empresaRut" ? formatRutInput(value) : value;
+
     setForm((current) => ({
       ...current,
-      [name]: value,
+      [name]: nextValue,
       ...(name === "tipoCliente" && value === "persona"
         ? {
             empresaNombre: "",
@@ -106,6 +109,7 @@ export function LeadFormDialog({ open, onClose }) {
     setFeedback(null);
 
     try {
+      const apiBaseUrl = getApiBaseUrl();
       const response = await fetch(`${apiBaseUrl}/api/applications/start`, {
         method: "POST",
         headers: {

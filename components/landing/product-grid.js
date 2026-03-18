@@ -33,8 +33,6 @@ export function ProductGrid() {
                 <a
                   className={styles.cardLink}
                   href={card.href}
-                  rel="noreferrer"
-                  target="_blank"
                 >
                   Saber más
                 </a>

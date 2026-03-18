@@ -1,0 +1,546 @@
+.pageSection {
+  min-height: 100vh;
+  padding: clamp(40px, 8vw, 92px) 0;
+  background:
+    radial-gradient(circle at top left, rgba(122, 89, 230, 0.16), transparent 26%),
+    radial-gradient(circle at bottom right, rgba(153, 255, 153, 0.16), transparent 22%),
+    linear-gradient(180deg, #fffaf3 0%, #f5efe7 100%);
+}
+
+.pageShell {
+  width: min(var(--max-width), calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 30px;
+  border-radius: 34px;
+  border: 1px solid rgba(24, 19, 31, 0.08);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 24px 50px rgba(35, 25, 65, 0.08);
+}
+
+.eyebrow,
+.heroLabel,
+.kpiLabel,
+.filterLabel,
+.detailLabel {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  color: var(--brand-soft);
+}
+
+.pageTitle {
+  margin: 10px 0 12px;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+
+.pageText {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.heroCard,
+.panel,
+.kpiCard,
+.emptyState,
+.errorState,
+.indecisoCard {
+  border: 1px solid rgba(24, 19, 31, 0.08);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 18px 38px rgba(35, 25, 65, 0.08);
+}
+
+.heroCard {
+  min-width: 190px;
+  padding: 20px;
+}
+
+.heroCard strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 1.4rem;
+}
+
+.kpiGrid,
+.analyticsGrid,
+.indecisosGrid,
+.detailGrid,
+.metricsGrid {
+  display: grid;
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.kpiGrid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.analyticsGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.kpiCard {
+  padding: 22px;
+}
+
+.kpiValue {
+  display: block;
+  margin-top: 10px;
+  font-family: var(--font-display), sans-serif;
+  font-size: 2rem;
+  letter-spacing: -0.04em;
+}
+
+.kpiHint {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.panel {
+  margin-top: 24px;
+  padding: 26px;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.panelTitle {
+  margin: 6px 0 0;
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: -0.03em;
+}
+
+.chartList,
+.observationList {
+  display: grid;
+  gap: 14px;
+}
+
+.chartItem {
+  display: grid;
+  gap: 8px;
+}
+
+.chartMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-weight: 700;
+}
+
+.chartTrack {
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(24, 19, 31, 0.08);
+  overflow: hidden;
+}
+
+.chartFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.chartFillViolet {
+  background: linear-gradient(90deg, var(--brand-soft), var(--brand));
+}
+
+.chartFillLime {
+  background: linear-gradient(90deg, #99ff99, #1c7a36);
+}
+
+.observationItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: rgba(245, 241, 255, 0.72);
+}
+
+.observationItem p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.observationDot {
+  width: 10px;
+  height: 10px;
+  margin-top: 8px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  flex: 0 0 auto;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(24, 19, 31, 0.08);
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.statusBadgesuccess {
+  background: rgba(220, 252, 231, 0.92);
+  color: #14532d;
+}
+
+.statusBadgedanger {
+  background: rgba(255, 241, 242, 0.92);
+  color: #9f1239;
+}
+
+.statusBadgewarning {
+  background: rgba(254, 249, 195, 0.92);
+  color: #854d0e;
+}
+
+.feedbackSuccess,
+.feedbackError {
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  font-weight: 600;
+}
+
+.feedbackSuccess {
+  background: rgba(220, 252, 231, 0.92);
+  color: #14532d;
+}
+
+.feedbackError {
+  background: rgba(255, 241, 242, 0.92);
+  color: #9f1239;
+}
+
+.indecisosGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.indecisoCard {
+  overflow: hidden;
+  padding: 0;
+}
+
+.indecisoCardExpanded {
+  box-shadow: 0 22px 42px rgba(35, 25, 65, 0.12);
+}
+
+.indecisoTrigger {
+  width: 100%;
+  padding: 20px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.indecisoTop,
+.indecisoMeta,
+.actionRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.indecisoTop strong {
+  display: block;
+}
+
+.indecisoTop p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+.indecisoMeta {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+.reasonList {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding-left: 18px;
+}
+
+.expandHint {
+  display: inline-flex;
+  margin-top: 16px;
+  font-weight: 700;
+  color: var(--brand);
+}
+
+.indecisoDetail {
+  padding: 0 20px 20px;
+  border-top: 1px solid rgba(24, 19, 31, 0.08);
+  background: rgba(250, 248, 255, 0.72);
+}
+
+.detailGrid,
+.metricsGrid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.metricsGrid {
+  margin-top: 18px;
+}
+
+.detailItem {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.84);
+}
+
+.detailItem strong {
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
+.detailLabel {
+  color: var(--muted);
+}
+
+.actionRow {
+  margin-top: 18px;
+}
+
+.approveButton,
+.rejectButton {
+  min-height: 50px;
+  padding: 0 20px;
+  border-radius: 999px;
+  border: 0;
+  font-size: 0.96rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.approveButton {
+  background: #111111;
+  color: #ffffff;
+}
+
+.rejectButton {
+  background: rgba(255, 241, 242, 0.95);
+  color: #9f1239;
+}
+
+.approveButton:hover,
+.rejectButton:hover {
+  transform: translateY(-1px);
+}
+
+.approveButton:disabled,
+.rejectButton:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
+}
+
+.filterBar {
+  display: grid;
+  grid-template-columns: 2fr repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.filterField {
+  display: grid;
+  gap: 8px;
+}
+
+.filterLabel {
+  color: var(--muted);
+}
+
+.filterInput {
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid rgba(24, 19, 31, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ink);
+  font: inherit;
+}
+
+.filterInput:focus {
+  outline: 2px solid rgba(122, 89, 230, 0.16);
+  border-color: rgba(122, 89, 230, 0.42);
+}
+
+.tableWrap {
+  overflow: auto;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.paginationInfo {
+  color: var(--muted);
+  font-size: 0.94rem;
+  font-weight: 600;
+}
+
+.paginationActions {
+  display: flex;
+  gap: 10px;
+}
+
+.pageButton {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid rgba(24, 19, 31, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
+  font-size: 0.94rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pageButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 16px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-top: 1px solid rgba(24, 19, 31, 0.08);
+}
+
+.table thead th {
+  border-top: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.table td strong {
+  display: block;
+}
+
+.table td span {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.noResultsCell {
+  text-align: center;
+  color: var(--muted);
+}
+
+.emptyState,
+.errorState {
+  margin-top: 24px;
+  padding: 28px;
+}
+
+.errorState {
+  background: rgba(255, 241, 242, 0.92);
+}
+
+@media (max-width: 1180px) {
+  .kpiGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .detailGrid,
+  .metricsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 920px) {
+  .hero,
+  .analyticsGrid,
+  .indecisosGrid,
+  .kpiGrid,
+  .filterBar {
+    grid-template-columns: 1fr;
+  }
+
+  .hero,
+  .panelHeader,
+  .indecisoTop,
+  .indecisoMeta,
+  .actionRow,
+  .pagination {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 640px) {
+  .detailGrid,
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel,
+  .hero,
+  .kpiCard {
+    padding: 20px;
+  }
+
+  .indecisoTrigger,
+  .indecisoDetail {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

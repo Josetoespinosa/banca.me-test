@@ -26,3 +26,7 @@ class ApplicationFinancialRequest(BaseModel):
     gastosMensuales: float = Field(ge=0)
     deudasMensuales: float = Field(ge=0)
     montoSolicitado: float = Field(ge=0)
+
+
+class AdminManualReviewRequest(BaseModel):
+    decision: Literal["apto", "no_apto"]

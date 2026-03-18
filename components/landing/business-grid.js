@@ -26,8 +26,6 @@ export function BusinessGrid() {
               <a
                 className={styles.cardLink}
                 href={service.href}
-                rel="noreferrer"
-                target="_blank"
               >
                 Saber más
               </a>
